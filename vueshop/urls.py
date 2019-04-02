@@ -17,17 +17,26 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
 from rest_framework.documentation import include_docs_urls
+from rest_framework.routers import DefaultRouter
 
 import xadmin
 from vueshop.settings import MEDIA_ROOT
 from django.views.static import serve
-from goods.views import GoodsList
+from goods.views import GoodsListViewsSet
+
+# goods_list =GoodsListViewsSet.as_view({
+#     'get':'list'
+# })
+
+router = DefaultRouter()
+#路由配置
+router.register(r'goods',GoodsListViewsSet)
 
 urlpatterns = [
+    path('', include(router.urls)),
     path('admin/', xadmin.site.urls),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),  
     url(r'^media/(?P<path>.*)$', serve, {"document_root": MEDIA_ROOT}),
     url(r'docs/', include_docs_urls(title="慕学生鲜")),#api文档
-    url(r'^goods/$', GoodsList.as_view(),name='goods'),  
 
 ]
